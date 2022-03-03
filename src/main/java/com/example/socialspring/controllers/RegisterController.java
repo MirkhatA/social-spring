@@ -41,6 +41,7 @@ public class RegisterController {
             userRepo.save(user);
             HttpSession session = request.getSession();
             session.setAttribute("username", user.getUsername());
+
             logger.info(user.getUsername() + " successfully registered");
             return "redirect:/login";
         }

@@ -1,5 +1,6 @@
 package com.example.socialspring.controllers;
 
+import com.example.socialspring.entities.Post;
 import com.example.socialspring.entities.User;
 import com.example.socialspring.repositories.CommentRepository;
 import com.example.socialspring.repositories.PostRepository;
@@ -9,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -29,7 +31,12 @@ public class UserController {
 
     @GetMapping("/profile")
     private String profile(Authentication authentication, Model model) {
-//        User user = userRepo.findByName(authentication.getName()).orElse(null);
+        User user = userRepo.findByUsername(authentication.getName()).orElse(null);
+        model.addAttribute("commentRepo", commentRepo);
+        model.addAttribute("posts", postRepo.findByUser(user));
+        model.addAttribute("post", new Post());
+        model.addAttribute("users", users);
+        model.addAttribute("user", user);
 
         return "userProfile";
     }
