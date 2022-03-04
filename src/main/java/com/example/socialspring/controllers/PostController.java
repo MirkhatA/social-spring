@@ -20,7 +20,10 @@ public class PostController {
 
     private final UserRepository userRepo;
     private final PostRepository postRepo;
+
     private static final Logger logger = LogManager.getLogger(PostController.class);
+
+
 
     @PostMapping
     private String postAdd(Post post, Authentication authentication) {
@@ -55,4 +58,5 @@ public class PostController {
         return "redirect:/user/profile";
 
     }
+
 }

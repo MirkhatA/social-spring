@@ -27,6 +27,7 @@ public class RegisterController {
     @GetMapping
     public String register(Model model) {
         model.addAttribute("user", new User());
+
         return "register";
     }
 
