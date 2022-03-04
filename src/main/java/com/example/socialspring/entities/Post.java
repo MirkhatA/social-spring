@@ -16,6 +16,7 @@ public class Post {
     private String description;
     private String status;
     private Boolean isComment;
+
     @ManyToOne
     private User user;
 }

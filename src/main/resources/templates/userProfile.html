@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
@@ -41,33 +41,88 @@
 
 <div class="container">
     <div class="row">
-        <h1>Add post:</h1>
+        <div class="col-md-4">
+            <h1>Add user:</h1>
 
-        <!-- TODO: add th -->
-        <form th:action="@{/post}" th:method="post" th:object="${post}">
-            <div class="col">
-                <label for="name" class="form-label">Post name</label>
-                <input type="text" class="form-control" id="name" placeholder="Post name" th:field="*{title}">
-            </div>
+            <!-- search -->
+            <form th:action="@{/user/findUser}" th:method="post" th:object="${user}">
+                <div class="col">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Username">
+                </div>
 
-            <div class="col">
-                <label for="description" class="form-label">Post name</label>
-                <input type="text" class="form-control" id="description" placeholder="Post description" th:field="*{description}">
-            </div>
+                <button class="mt-2 btn btn-primary" type="submit">Send</button>
+            </form>
+        </div>
 
-            <button class="mt-2 btn btn-primary" type="submit">Send</button>
-        </form>
+        <div class="col-md-8">
+            <h1>Add post:</h1>
+
+            <form th:action="@{/post}" th:method="post" th:object="${post}">
+                <div class="col">
+                    <label for="name" class="form-label">Post name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Post name" th:field="*{title}">
+                </div>
+
+                <div class="col">
+                    <label for="description" class="form-label">Post name</label>
+                    <input type="text" class="form-control" id="description" placeholder="Post description" th:field="*{description}">
+                </div>
+
+                <button class="mt-2 btn btn-primary" type="submit">Send</button>
+            </form>
+        </div>
+
     </div>
 </div>
 
 <div class="container">
     <div class="row">
         <div class="col-md-4 border">
-            My friends:
+            Allowed users:
+
+            <div class="card" style="width: 18rem;" th:each="user: ${users}">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${user.getUsername()}"></h5>
+
+                    <form th:action="@{/user/addUser}" th:method="post">
+                        <input type="text" class="d-none" name="friendId" th:value="${user.getId()}">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-8 border">
             My posts:
+
+            <div class="card" style="width: 18rem;" th:each="post: ${posts}">
+                <h5 class="card-title" th:text="${post.getTitle()}"></h5>
+
+                <p th:text="${post.getDescription()}"></p>
+
+                <br>
+
+                <form th:action="@{/post/update}" method="post">
+                    <input type="text" name="id" class="d-none" th:value="${post.getId()}"><br>
+
+                    <hr>
+
+
+                    <!--TODO: create separate page for update -->
+                    <h6>Post status</h6>
+                    <input type="radio" name="status" value="internet" >Internet
+                    <input type="radio" name="status" value="authorized">Authorized
+                    <input type="radio" name="status" value="friends">Friends
+
+                    <h6>Can comment</h6>
+                    <input type="radio" name="comment" value="true" >Turn on
+                    <input type="radio" name="comment" value="false">disable
+
+                    <br>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

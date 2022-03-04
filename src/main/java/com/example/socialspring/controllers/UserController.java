@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,5 +40,49 @@ public class UserController {
         model.addAttribute("user", user);
 
         return "userProfile";
+    }
+
+
+
+    @PostMapping("/findUser")
+    private String findUser(Authentication authentication, @RequestParam String username) {
+        User user = userRepo.findByUsername(authentication.getName()).orElse(null);
+        User friend = userRepo.findByUsername(username).orElse(null);
+
+        users = new ArrayList<>();
+
+        if (user != null && friend != null && user!= friend) {
+            users.add(friend);
+            logger.info("User found");
+        } else {
+            logger.info("Error");
+        }
+
+        return "redirect:/user/profile";
+    }
+
+    @PostMapping("/addUser")
+    private String addUser(Authentication authentication, @RequestParam String id) {
+        User user = userRepo.findByUsername(authentication.getName()).orElse(null);
+        User friend = userRepo.findById(Long.parseLong(id)).orElse(null);
+
+        if (user != null) {
+            List<User> users = user.getFriends();
+
+            if (!users.contains(friend)) {
+                users.add(friend);
+                List<User> friendList = friend.getFriends();
+                // accept it
+                friendList.add(user);
+                friend.setFriends(friendList);
+                user.setFriends(users);
+                userRepo.save(user);
+                userRepo.save(friend);
+            }
+            logger.info("User added successfully");
+        } else {
+            logger.info("Error!");
+        }
+        return "redirect:/user/profile";
     }
 }

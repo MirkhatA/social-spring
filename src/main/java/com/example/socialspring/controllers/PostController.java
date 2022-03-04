@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/post")
@@ -28,14 +29,30 @@ public class PostController {
             post.setUser(user);
             post.setIsComment(true);
             post.setStatus("internet");
-            logger.info("Success");
+            logger.info("Post created successfully!");
 
             postRepo.save(post);
         }
         else {
-            logger.error("Some error");
+            logger.error("Some error!");
         }
 
         return "redirect:/";
+    }
+
+    @PostMapping("/update")
+    private String postUpdate(@RequestParam String status, @RequestParam String comment, @RequestParam String id) {
+        Post post = postRepo.findById(Long.parseLong(id)).orElse(null);
+
+        if (post != null) {
+            post.setStatus(status);
+            post.setIsComment(comment.equals("enable"));
+            postRepo.save(post);
+            logger.info("Post updated successfully!");
+        } else {
+            logger.error("Some error!");
+        }
+        return "redirect:/user/profile";
+
     }
 }
